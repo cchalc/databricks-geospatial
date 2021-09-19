@@ -27,7 +27,7 @@
 
 // DBTITLE 1,Configure Paths
 // modify this accordingly
-val BASE_PATH_DBFS = "/home/derek.yeager@databricks.com/nyctaxi/green_tripdata"
+val BASE_PATH_DBFS = "/home/christopher.chalcraft@databricks.com/nyctaxi/green_tripdata"
 
 //val RAW_PATH = BASE_PATH_DBFS + "/raw"
 //val SCHEMA_V1_RAW_PATH = RAW_PATH + "/schema_v1"
@@ -180,8 +180,8 @@ green_tripdata_v1.write
 
 // DBTITLE 1,Create Database
 // MAGIC %sql
-// MAGIC CREATE DATABASE IF NOT EXISTS nyctlc;
-// MAGIC USE nyctlc;
+// MAGIC CREATE DATABASE IF NOT EXISTS cchalc_nyctlc;
+// MAGIC USE cchalc_nyctlc;
 
 // COMMAND ----------
 
@@ -248,13 +248,13 @@ spark.conf.set("spark.databricks.io.skipping.mdc.curve", "hilbert")
 
 // DBTITLE 1,Optimize table for performance
 // MAGIC %sql
-// MAGIC OPTIMIZE nyctlc.green_tripdata_bronze ZORDER BY Pickup_latitude, Pickup_longitude
+// MAGIC OPTIMIZE cchalc_nyctlc.green_tripdata_bronze ZORDER BY Pickup_latitude, Pickup_longitude
 
 // COMMAND ----------
 
 // DBTITLE 1,Note that we now have ~45M trip records in our table
 // MAGIC %sql
-// MAGIC SELECT count(*) FROM nyctlc.green_tripdata_bronze
+// MAGIC SELECT count(*) FROM cchalc_nyctlc.green_tripdata_bronze
 
 // COMMAND ----------
 
@@ -266,4 +266,4 @@ spark.conf.set("spark.databricks.io.skipping.mdc.curve", "hilbert")
 
 // DBTITLE 1,... and ~28M records do have a value for the new column
 // MAGIC %sql
-// MAGIC SELECT count(*) FROM nyctlc.green_tripdata_bronze WHERE improvement_surcharge IS NOT null
+// MAGIC SELECT count(*) FROM cchalc_nyctlc.green_tripdata_bronze WHERE improvement_surcharge IS NOT null
