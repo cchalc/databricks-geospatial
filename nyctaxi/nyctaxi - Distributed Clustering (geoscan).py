@@ -18,7 +18,7 @@
 
 # COMMAND ----------
 
-# MAGIC %sql USE nyctlc
+# MAGIC %sql USE cchalc_nyctlc
 
 # COMMAND ----------
 
@@ -53,7 +53,7 @@ points_df = spark.read.table('green_tripdata_bronze') \
 num_points = points_df.count()
 print("num_points: ", num_points)
 
-#display(points_df)
+display(points_df)
 
 # COMMAND ----------
 
@@ -67,12 +67,12 @@ def to_h3(lat, lng, precision):
   return h.upper()
 
 # examine distribution at resolution 9
-#display(
-#  points_df
-#    .groupBy(to_h3(F.col('latitude'), F.col('longitude'), F.lit(9)).alias('h3'))
-#    .count()
-#    .orderBy(F.desc('count'))
-#)
+display(
+ points_df
+   .groupBy(to_h3(F.col('latitude'), F.col('longitude'), F.lit(9)).alias('h3'))
+   .count()
+   .orderBy(F.desc('count'))
+)
 
 # COMMAND ----------
 
@@ -106,10 +106,14 @@ print("geosscan_sample_count: ", geosscan_sample_count)
 
 # COMMAND ----------
 
+# dbutils.fs.mkdirs("/tmp/christopher.chalcraft@databricks.com")
+
+# COMMAND ----------
+
 from geoscan import Geoscan
 import mlflow
 
-with mlflow.start_run(run_name='GEOSCAN_NYCTAXI') as run:
+with mlflow.start_run(run_name='cchalc_geoscan_nyctaxi') as run:
 
   geoscan = Geoscan() \
     .setLatitudeCol('latitude') \
@@ -126,11 +130,11 @@ with mlflow.start_run(run_name='GEOSCAN_NYCTAXI') as run:
   run_id = run.info.run_id
 
 geoJson = model.toGeoJson()
-with open('/tmp/geoscan.geojson', 'w') as f:
+with open('/tmp/christopher.chalcraft@.com/geoscan.geojson', 'w') as f:
   f.write(geoJson)
 
 client = mlflow.tracking.MlflowClient()
-client.log_artifact(run_id, "/tmp/geoscan.geojson")
+client.log_artifact(run_id, "/tmp/christopher.chalcraft@databricks.com/geoscan.geojson")
 
 # COMMAND ----------
 
