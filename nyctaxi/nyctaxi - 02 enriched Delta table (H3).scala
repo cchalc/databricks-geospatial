@@ -15,7 +15,7 @@
 // COMMAND ----------
 
 // MAGIC %sql
-// MAGIC USE nyctlc
+// MAGIC USE cchalc_nyctlc
 
 // COMMAND ----------
 
@@ -118,9 +118,8 @@ green_h3.createOrReplaceTempView("green_h3")
 
 // COMMAND ----------
 
-/* Uncomment to persist H3-enriched table to Delta
+// Uncomment to persist H3-enriched table to Delta
 green_h3
   .write
   .format("delta")
   .saveAsTable("green_tripdata_silver")
-*/
