@@ -33,7 +33,7 @@ schema_taxi_payment_type = StructType([
 #
 
 # Taxi Rate Code
-@create_view(name="map_rate_code")
+@dlt.create_table(name="map_rate_code")
 def map_rate_code():
   return (
     spark.read.format("csv")
@@ -43,7 +43,7 @@ def map_rate_code():
       .load("/databricks-datasets/nyctaxi/taxizone/taxi_rate_code.csv")    
   )
 
-@create_view(name="map_payment_type")
+@dlt.create_table(name="map_payment_type")
 def map_payment_type():
   return (
       spark.read.format("csv")
@@ -53,7 +53,7 @@ def map_payment_type():
         .load("/databricks-datasets/nyctaxi/taxizone/taxi_payment_type.csv")  
   )
   
-@create_view(name="map_point_to_location")
+@dlt.create_table(name="map_point_to_location")
 def map_point_to_location():
   return (
     spark.read.format("delta").load("/user/denny.lee/nyctaxi/map_point2Location") 
@@ -64,7 +64,7 @@ def map_point_to_location():
 #
 
 # Green Cab Source View
-@create_view(
+@dlt.create_table(
    name="src_green_cab"  
 )
 @expect("valid pickup_datetime", "lpep_pickup_datetime IS NOT NULL")
