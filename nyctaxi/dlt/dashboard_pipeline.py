@@ -1,5 +1,4 @@
 # Databricks notebook source
-# Databricks notebook source
 # 
 # 2015 NYC Taxi Pipeline 
 #
@@ -56,7 +55,7 @@ def map_payment_type():
 @dlt.create_table(name="map_point_to_location")
 def map_point_to_location():
   return (
-    spark.read.format("delta").load("/user/denny.lee/nyctaxi/map_point2Location") 
+    spark.read.format("delta").load("/user/christopher.chalcraft@databricks.com/nyctaxi/map_point2Location") 
   )
 
 #
@@ -67,28 +66,28 @@ def map_point_to_location():
 @dlt.create_table(
    name="src_green_cab"  
 )
-@expect("valid pickup_datetime", "lpep_pickup_datetime IS NOT NULL")
-@expect("valid dropoff_datetime", "lpep_dropoff_datetime IS NOT NULL")
+@dlt.expect("valid pickup_datetime", "lpep_pickup_datetime IS NOT NULL")
+@dlt.expect("valid dropoff_datetime", "lpep_dropoff_datetime IS NOT NULL")
 def src_green_cab():
   return (
-    spark.read.format("delta").load("/user/denny.lee/nyctaxi/nyctaxi_greencab_source")
+    spark.read.format("delta").load("/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_source")
   )
 
 # 
 # Bronze (bz) Tables 
 #
-@create_table(
+@dlt.table(
     name="bz_green_cab",
     partition_cols=["do_date"],
     table_properties={
         "pipelines.autoOptimize.zOrderCols": "do_datetime", 
-        "pipelines.metastore.tableName": "DAIS21.bz_green_cab"
+        "pipelines.metastore.tableName": "cchalc_nyctaxi.bz_green_cab"
     }
 )
-@expect_or_drop("valid do_date", "do_date IS NOT NULL")
+@dlt.expect_or_drop("valid do_date", "do_date IS NOT NULL")
 def bz_green_cab():
   return (
-    read("src_green_cab")
+    dlt.read("src_green_cab")
         .withColumnRenamed("lpep_dropoff_datetime", "do_datetime")
         .withColumnRenamed("lpep_pickup_datetime", "pu_datetime")
         .withColumnRenamed("dropoff_latitude", "do_lat")
@@ -103,7 +102,7 @@ def bz_green_cab():
 # Silver (Ag) Tables
 # 
 
-@create_table(
+@dlt.table(
     name="ag_green_cab",
     partition_cols=["do_date"],
     table_properties={
@@ -112,12 +111,12 @@ def bz_green_cab():
 )
 #@expect("non zero passenger count", "passenger_count > 0")
 #@expect_or_fail("non zero passenger count", "passenger_count > 0")
-@expect_or_drop("non zero passenger count", "passenger_count > 0")
+@dlt.expect_or_drop("non zero passenger count", "passenger_count > 0")
 def ag_green_cab():
-  ft = read("bz_green_cab")
-  rc = read("map_rate_code")
-  pt = read("map_payment_type")
-  pl = read("map_point_to_location")
+  ft = dlt.read("bz_green_cab")
+  rc = dlt.read("map_rate_code")
+  pt = dlt.read("map_payment_type")
+  pl = dlt.read("map_point_to_location")
   return (
       ft.join(rc, rc.rate_code_id == ft.rate_code_id)
         .join(pt, pt.payment_type == ft.payment_type)
@@ -132,16 +131,16 @@ def ag_green_cab():
 # 
   
 # Summary Stats  
-@create_table(
+@dlt.table(
   name="au_summary_stats",
   table_properties={
-        "pipelines.metastore.tableName": "DAIS21.au_summary_stats"
+        "pipelines.metastore.tableName": "cchalc_nyctaxi.au_summary_stats"
     } 
 )  
 def au_summary_stats():
   return(
-      read("bz_green_cab")
-        .groupBy("do_date").agg(
+      dlt.read("bz_green_cab")
+         .groupBy("do_date").agg(
             expr("COUNT(DISTINCT pu_datetime) AS pickups"), 
             expr("COUNT(DISTINCT do_datetime) AS dropoffs"),
             expr("COUNT(1) AS trips")
@@ -149,62 +148,62 @@ def au_summary_stats():
   )
 
 # Payment Type By Hour (across time)
-@create_table(
+@dlt.create_table(
     name="au_payment_by_hour",
     table_properties={
-        "pipelines.metastore.tableName": "DAIS21.au_payment_by_hour"
+        "pipelines.metastore.tableName": "cchalc_nyctaxi.au_payment_by_hour"
     } 
 )
 def au_payment_by_hour():
     return (
-        read("ag_green_cab")
-            .groupBy("hour", "payment_desc").agg(expr("SUM(total_amount) AS total_amount"))
+        dlt.read("ag_green_cab")
+           .groupBy("hour", "payment_desc").agg(expr("SUM(total_amount) AS total_amount"))
 
 
     )
   
   
 # Four (of the 5) main boroughs
-@create_table(
+@dlt.create_table(
     name="au_boroughs",
     table_properties={
-        "pipelines.metastore.tableName": "DAIS21.au_boroughs"
+        "pipelines.metastore.tableName": "cchalc_nyctaxi.au_boroughs"
     } 
   
 )
-@expect_or_drop("total fare amount is > $3.00", "total_amount > 3.00")
+@dlt.expect_or_drop("total fare amount is > $3.00", "total_amount > 3.00")
 def au_boroughs():
     return (
-        read("ag_green_cab")
-            .where(expr("borough IN ('Bronx', 'Brooklyn', 'Queens', 'Manhattan')"))
-            .select("borough", "do_datetime", "do_lat", "do_long", "rate_code_desc", "payment_desc", "zone", "total_amount")
+        dlt.read("ag_green_cab")
+           .where(expr("borough IN ('Bronx', 'Brooklyn', 'Queens', 'Manhattan')"))
+           .select("borough", "do_datetime", "do_lat", "do_long", "rate_code_desc", "payment_desc", "zone", "total_amount")
     )
   
 
-# Expectation Log table
-@create_table(
-    name="expectation_log",
-    table_properties={
-        "pipelines.autoOptimize.zOrderCols": "do_datetime", 
-        "pipelines.metastore.tableName": "DAIS21.expectations_log"
-    }  
-)
-def expectation_log():
-  pipelines_id = spark.conf.get("pipelines.id")
-  sqlQuery = """SELECT id, origin, timestamp, details 
-                  FROM delta.`dbfs:/pipelines/""" + pipelines_id + """/system/events/` 
-                 WHERE details LIKE '%flow_progress%data_quality%expectations%'"""
-  df = spark.sql(sqlQuery)
-  schema = schema_of_json("""{"flow_progress":{
-                                "status":"COMPLETED",
-                                "metrics":{"num_output_rows":91939},
-                                "data_quality":{"dropped_records":32,
-                                "expectations":[{"name":"non zero passenger count","dataset":"silver_GreenCab","passed_records":91939,"failed_records":32}]}}
-                              }""")      
-  df_expectations = df.withColumn("details_json", from_json(df.details, schema))
-  return (
-      df_expectations.select("id", "timestamp", "origin.pipeline_id", "origin.pipeline_name", "origin.cluster_id", "origin.flow_id", "origin.flow_name", "details_json") 
-  )
+# # Expectation Log table
+# @dlt.create_table(
+#     name="expectation_log",
+#     table_properties={
+#         "pipelines.autoOptimize.zOrderCols": "do_datetime", 
+#         "pipelines.metastore.tableName": "cchalc_nyctaxi.expectations_log"
+#     }  
+# )
+# def expectation_log():
+#   pipelines_id = spark.conf.get("pipelines.id")
+#   sqlQuery = """SELECT id, origin, timestamp, details 
+#                   FROM delta.`dbfs:/pipelines/""" + pipelines_id + """/system/events/` 
+#                  WHERE details LIKE '%flow_progress%data_quality%expectations%'"""
+#   df = spark.sql(sqlQuery)
+#   schema = schema_of_json("""{"flow_progress":{
+#                                 "status":"COMPLETED",
+#                                 "metrics":{"num_output_rows":91939},
+#                                 "data_quality":{"dropped_records":32,
+#                                 "expectations":[{"name":"non zero passenger count","dataset":"silver_GreenCab","passed_records":91939,"failed_records":32}]}}
+#                               }""")      
+#   df_expectations = df.withColumn("details_json", from_json(df.details, schema))
+#   return (
+#       df_expectations.select("id", "timestamp", "origin.pipeline_id", "origin.pipeline_name", "origin.cluster_id", "origin.flow_id", "origin.flow_name", "details_json") 
+#   )
 
 #   createTable("expectations_log")
 #     .query {
