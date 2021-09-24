@@ -70,25 +70,25 @@ display(df)
 
 // MAGIC %sql
 // MAGIC -- drop table
-// MAGIC DROP TABLE IF EXISTS DAIS21.nyctaxi_greencab_origin;
+// MAGIC DROP TABLE IF EXISTS cchalc.nyctaxi_greencab_origin;
 
 // COMMAND ----------
 
-dbutils.fs.rm("/user/denny.lee/nyctaxi/nyctaxi_greencab_origin", recurse=true)
+dbutils.fs.rm("/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_origin", recurse=true)
 
 // COMMAND ----------
 
 // MAGIC %sql
 // MAGIC -- Create origin table 
-// MAGIC CREATE TABLE DAIS21.nyctaxi_greencab_origin
+// MAGIC CREATE TABLE cchalc.nyctaxi_greencab_origin
 // MAGIC USING delta
-// MAGIC LOCATION "/user/denny.lee/nyctaxi/nyctaxi_greencab_origin"
+// MAGIC LOCATION "/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_origin"
 // MAGIC AS (
 // MAGIC SELECT * FROM greencab_2015
 // MAGIC );
 // MAGIC 
 // MAGIC -- Optimize table
-// MAGIC OPTIMIZE DAIS21.nyctaxi_greencab_origin;
+// MAGIC OPTIMIZE cchalc.nyctaxi_greencab_origin;
 
 // COMMAND ----------
 
@@ -102,22 +102,22 @@ dbutils.fs.rm("/user/denny.lee/nyctaxi/nyctaxi_greencab_origin", recurse=true)
 
 // MAGIC %sql
 // MAGIC -- drop table
-// MAGIC DROP TABLE IF EXISTS DAIS21.nyctaxi_greencab_source;
+// MAGIC DROP TABLE IF EXISTS cchalc.nyctaxi_greencab_source;
 
 // COMMAND ----------
 
-dbutils.fs.rm("/user/denny.lee/nyctaxi/nyctaxi_greencab_source", recurse=true)
+dbutils.fs.rm("/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_source", recurse=true)
 
 // COMMAND ----------
 
 // MAGIC %sql
 // MAGIC -- Initially set of data
-// MAGIC CREATE TABLE DAIS21.nyctaxi_greencab_source
+// MAGIC CREATE TABLE cchalc.nyctaxi_greencab_source
 // MAGIC USING delta
-// MAGIC LOCATION "/user/denny.lee/nyctaxi/nyctaxi_greencab_source"
+// MAGIC LOCATION "/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_source"
 // MAGIC AS (
 // MAGIC SELECT *
-// MAGIC   FROM DAIS21.nyctaxi_greencab_origin
+// MAGIC   FROM cchalc.nyctaxi_greencab_origin
 // MAGIC  WHERE DATE(lpep_dropoff_datetime) = "2015-03-01"
 // MAGIC ) 
 
@@ -139,9 +139,9 @@ dbutils.notebook.exit("Stop the notebook")
 
 // MAGIC %sql
 // MAGIC -- Next day
-// MAGIC INSERT INTO DAIS21.nyctaxi_greencab_source
+// MAGIC INSERT INTO cchalc.nyctaxi_greencab_source
 // MAGIC SELECT *
-// MAGIC   FROM DAIS21.nyctaxi_greencab_origin
+// MAGIC   FROM cchalc.nyctaxi_greencab_origin
 // MAGIC -- WHERE DATE(lpep_dropoff_datetime) = "2015-03-02"
 // MAGIC  WHERE DATE(lpep_dropoff_datetime) = "2015-03-03"
 // MAGIC --  WHERE DATE(lpep_dropoff_datetime) = "2015-03-04"
@@ -211,7 +211,7 @@ display(map_paymentType)
 
 // COMMAND ----------
 
-val map_point2Location = spark.read.format("delta").load("/user/denny.lee/nyctaxi/map_point2Location")
+val map_point2Location = spark.read.format("delta").load("/user/christopher.chalcraft@databricks.com/nyctaxi/map_point2Location")
 display(map_point2Location)
 
 // COMMAND ----------
@@ -228,7 +228,7 @@ display(map_point2Location)
 //     .expect("valid pickup_datetime", "lpep_pickup_datetime IS NOT NULL")   
 //     .expect("valid dropoff_datetime", "lpep_dropoff_datetime IS NOT NULL")
 
-val raw_GreenCab = spark.read.format("delta").load("/user/denny.lee/nyctaxi/nyctaxi_greencab_2015") 
+val raw_GreenCab = spark.read.format("delta").load("/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_2015") 
 
 // COMMAND ----------
 

@@ -198,12 +198,12 @@ val map_pointToLocation = dfWithBoroughH3
 
 // COMMAND ----------
 
-// dbutils.fs.rm("/user/denny.lee/nyctaxi/map_point2Location", recurse=true)
+dbutils.fs.rm("/user/christopher.chalcraft@databricks.com/nyctaxi/map_point2Location", recurse=true)
 
 // COMMAND ----------
 
 // Save table
-map_pointToLocation.write.format("delta").save("/user/denny.lee/nyctaxi/map_point2Location")
+map_pointToLocation.write.format("delta").save("/user/christopher.chalcraft@databricks.com/nyctaxi/map_point2Location")
 
 // COMMAND ----------
 
@@ -212,4 +212,3 @@ map_pointToLocation.write.format("delta").save("/user/denny.lee/nyctaxi/map_poin
 // COMMAND ----------
 
 // MAGIC %md _While it is not shown here, in the blog we adapted some logic from [h3 example notebooks](https://github.com/uber/h3-py-notebooks/blob/master/H3%20API%20examples%20on%20Urban%20Analytics.ipynb) to visualization of taxi dropoff locations, with latitude and longitude binned at a resolution of 7 (1.22km edge length) and colored by aggregated counts within each bin._
-

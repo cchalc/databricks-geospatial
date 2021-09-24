@@ -48,7 +48,7 @@ class NYCTaxiPipeline extends Pipeline with Implicits {
   // map_point2Location
   createView("map_point2Location")
     .query {
-        spark.read.format("delta").load("/user/denny.lee/nyctaxi/map_point2Location")    
+        spark.read.format("delta").load("/user/christopher.chalcraft@databricks.com/nyctaxi/map_point2Location")    
     }
   
 
@@ -59,7 +59,7 @@ class NYCTaxiPipeline extends Pipeline with Implicits {
   // Green Cab Source View
   createView("source_GreenCab")
     .query {
-        spark.read.format("delta").load("/user/denny.lee/nyctaxi/nyctaxi_greencab_source") 
+        spark.read.format("delta").load("/user/christopher.chalcraft@databricks.com/nyctaxi/nyctaxi_greencab_source") 
     }
     .expect("valid pickup_datetime", "lpep_pickup_datetime IS NOT NULL")   
     .expect("valid dropoff_datetime", "lpep_dropoff_datetime IS NOT NULL")
