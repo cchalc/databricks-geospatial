@@ -80,7 +80,7 @@ SedonaRegistrator.registerAll(spark)
 
 # COMMAND ----------
 
-# MAGIC %sql USE nyctlc
+# MAGIC %sql USE cchalc_nyctlc
 
 # COMMAND ----------
 

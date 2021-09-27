@@ -26,7 +26,7 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC USE nyctlc
+# MAGIC USE cchalc_nyctlc
 
 # COMMAND ----------
 
@@ -47,11 +47,11 @@ print(numNeighborhoods)
 wktDF.write \
   .format("delta") \
   .mode("overwrite") \
-  .save("/home/derek.yeager@databricks.com/nyctaxi/taxi_zones")
+  .save("/home/christopher.chalcraft@databricks.com/nyctaxi/taxi_zones")
 
 # COMMAND ----------
 
-spark.sql("CREATE TABLE nyc_taxi_zones_bronze USING DELTA LOCATION '" + "/home/derek.yeager@databricks.com/nyctaxi/taxi_zones" + "'")
+spark.sql("CREATE TABLE nyc_taxi_zones_bronze USING DELTA LOCATION '" + "/home/christopher.chalcraft@databricks.com/nyctaxi/taxi_zones" + "'")
 
 # COMMAND ----------
 

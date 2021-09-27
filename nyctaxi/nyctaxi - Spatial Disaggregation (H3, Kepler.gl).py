@@ -99,7 +99,7 @@ h3_resolution = 11
 # COMMAND ----------
 
 h3_aggregation = (
-  spark.read.table("nyctlc.green_tripdata_bronze")
+  spark.read.table("cchalc_nyctlc.green_tripdata_bronze")
     
     # compute h3 grid location at a given resolution for each point
     .withColumn(
@@ -142,7 +142,19 @@ pandas_df = h3_aggregation.toPandas()
 
 # COMMAND ----------
 
-pandas_df.to_csv(f"/dbfs/home/derek.yeager@databricks.com/nyctaxi/green_rollups/out_{h3_resolution}_.csv", index=False, header=True)
+# MAGIC %fs ls dbfs:/home/christopher.chalcraft@databricks.com/nyctaxi/
+
+# COMMAND ----------
+
+dbutils.fs.mkdirs("dbfs:/home/christopher.chalcraft@databricks.com/nyctaxi/green_rollups")
+
+# COMMAND ----------
+
+pandas_df.head()
+
+# COMMAND ----------
+
+pandas_df.to_csv(f"/dbfs/home/christopher.chalcraft@databricks.com/nyctaxi/green_rollups/out_{h3_resolution}_.csv", index=False, header=True)
 
 # COMMAND ----------
 

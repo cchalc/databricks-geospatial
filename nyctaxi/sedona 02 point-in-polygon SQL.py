@@ -54,7 +54,7 @@ SedonaRegistrator.registerAll(spark)
 
 # COMMAND ----------
 
-# MAGIC %sql USE nyctlc
+# MAGIC %sql USE cchalc_nyctlc
 
 # COMMAND ----------
 
@@ -79,6 +79,10 @@ num_points_in_sample = points_df.count()
 
 # COMMAND ----------
 
+display(points_df)
+
+# COMMAND ----------
+
 # MAGIC %md # Load Polygons
 
 # COMMAND ----------
@@ -92,6 +96,10 @@ polygon_df = spark.sql("""
   .cache()
 
 num_polygons = polygon_df.count()
+
+# COMMAND ----------
+
+display(polygon_df)
 
 # COMMAND ----------
 
