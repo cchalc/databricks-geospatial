@@ -1,2 +1,2 @@
 # databricks-geospatial
-Collection of geospatial notebooks
+Collection of geospatial notebooks and configuration
