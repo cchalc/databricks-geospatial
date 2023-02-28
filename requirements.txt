@@ -1,0 +1,7 @@
+dbx
+databricks-cli
+databricks-sql-cli
+databricks-sql-connector
+nutter
+pydantic
+faker
