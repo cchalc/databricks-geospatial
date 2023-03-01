@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %pip install databricks-mosaic
+
+# COMMAND ----------
+
 import mosaic as mos
 mos.enable_mosaic(spark, dbutils)
 mos.setup_gdal(spark)
