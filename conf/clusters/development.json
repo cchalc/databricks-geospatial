@@ -3,7 +3,7 @@
         "min_workers": 1,
         "max_workers": 4
     },
-    "cluster_name": "cchalc_mosaic_dev",
+    "cluster_name": "cchalc_dev",
     "spark_version": "12.1.x-scala2.12",
     "spark_conf": {},
     "aws_attributes": {

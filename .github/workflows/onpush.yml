@@ -35,4 +35,12 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: setup mosaic
+        run: |
+          databricks jobs create --json-file ./conf/jobs/geo_setup.json
+
+      - 
+        name: create cluster
+        run: |
+          databricks clusters create --json-file ./conf/clusters/development.json
 

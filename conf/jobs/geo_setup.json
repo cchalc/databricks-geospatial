@@ -1,0 +1,57 @@
+{
+    "name": "cchalc_geo_setup",
+    "email_notifications": {
+        "no_alert_for_skipped_runs": false
+    },
+    "webhook_notifications": {},
+    "timeout_seconds": 0,
+    "max_concurrent_runs": 1,
+    "tasks": [
+        {
+            "task_key": "setup_mosaic",
+            "notebook_task": {
+                "notebook_path": "notebooks/setup_mosaic",
+                "source": "GIT"
+            },
+            "job_cluster_key": "geospatial_setup",
+            "libraries": [
+                {
+                    "pypi": {
+                        "package": "databricks-mosaic"
+                    }
+                }
+            ],
+            "timeout_seconds": 0,
+            "email_notifications": {}
+        }
+    ],
+    "job_clusters": [
+        {
+            "job_cluster_key": "geospatial_setup",
+            "new_cluster": {
+                "spark_version": "12.1.x-scala2.12",
+                "spark_conf": {
+                    "spark.master": "local[*, 4]",
+                    "spark.databricks.cluster.profile": "singleNode"
+                },
+                "aws_attributes": {
+                    "instance_profile_arn": "arn:aws:iam::997819012307:instance-profile/one-env-databricks-access"
+                },
+                "custom_tags": {
+                    "ResourceClass": "SingleNode"
+                },
+                "instance_pool_id": "0727-104344-hauls13-pool-uftxk0r6",
+                "driver_instance_pool_id": "0727-104344-hauls13-pool-uftxk0r6",
+                "data_security_mode": "SINGLE_USER",
+                "runtime_engine": "STANDARD",
+                "num_workers": 0
+            }
+        }
+    ],
+    "git_source": {
+        "git_url": "https://github.com/cchalc/databricks-geospatial.git",
+        "git_provider": "gitHub",
+        "git_branch": "main"
+    },
+    "format": "MULTI_TASK"
+}
