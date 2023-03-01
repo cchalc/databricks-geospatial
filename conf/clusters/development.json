@@ -25,5 +25,12 @@
     "single_user_name": "christopher.chalcraft@databricks.com",
     "enable_local_disk_encryption": false,
     "data_security_mode": "SINGLE_USER",
-    "runtime_engine": "PHOTON"
+    "runtime_engine": "PHOTON",
+    "init_scripts": [
+        {
+            "dbfs": {
+                "destination": "dbfs:/FileStore/geospatial/mosaic/gdal/mosaic-gdal-init.sh"
+            }
+        }
+    ]
 }

@@ -1,0 +1,69 @@
+name: CI pipeline
+
+on:
+  workflow_dispatch:
+    branches:
+      - '**'
+    tags-ignore:
+      - 'v*' # this tag type is used for release pipelines
+
+jobs:
+  ci-pipeline:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+
+      - name: Install pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install dependencies and project in dev mode
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install pip and databricks-cli
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U databricks-cli
+
+      - name: Prepare profile
+        run: |
+          echo "[DEFAULT]" >> ~/.databrickscfg
+          echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+          echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+
+      - 
+        name: update jobs api to version 2.1
+        run: |
+          databricks jobs configure --version=2.1
+
+      - name: setup mosaic
+        run: |
+          databricks jobs create --json-file ./conf/jobs/geo_setup.json
+
+      - 
+    name: get jobid for setup and run
+    run: |
+      SETUP_JOBID=`databricks jobs list | grep cchalc_geo_setup | awk '{ print $1 }'`
+      databricks jobs run-now --job-id ${SETUP_JOBID}
+
+
+      - 
+        name: create cluster
+        run: |
+          databricks clusters create --json-file ./conf/clusters/development.json
+
