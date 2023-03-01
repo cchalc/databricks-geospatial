@@ -58,6 +58,7 @@ jobs:
       - 
         name: get jobid for setup and run
         run: |
+          sleep 20
           SETUP_JOBID=`databricks jobs list | grep cchalc_geo_setup | awk '{ print $1 }'`
           databricks jobs run-now --job-id ${SETUP_JOBID}
 
