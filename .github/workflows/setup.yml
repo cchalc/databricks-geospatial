@@ -41,9 +41,10 @@ jobs:
 
       - name: Prepare profile
         run: |
-          echo "[DEFAULT]" >> ~/.databrickscfg
+          echo "[DEFAULT]" > ~/.databrickscfg
           echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
           echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+          echo "jobs-api-version = 2.1" >> ~/.databrickscfg
 
       - 
         name: update jobs api to version 2.1
