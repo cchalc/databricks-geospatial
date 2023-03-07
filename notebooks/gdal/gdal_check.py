@@ -27,4 +27,8 @@ from pyspark.sql import functions as F
 
 # COMMAND ----------
 
+# MAGIC %fs ls /FileStore/geospatial/mosaic/sample_raster_data/binary/netcdf-coral
+
+# COMMAND ----------
+
 
