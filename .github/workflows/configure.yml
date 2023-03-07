@@ -1,0 +1,57 @@
+name: Config CI pipeline
+
+on:
+  workflow_dispatch:
+    branches:
+      - '**'
+    tags-ignore:
+      - 'v*' # this tag type is used for release pipelines
+
+jobs:
+  ci-pipeline:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+
+      - name: Install pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install dependencies and project in dev mode
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install pip and databricks-cli
+        run: |
+          pip install databricks-cli --upgrade
+
+      - name: Prepare profile
+        run: |
+          echo "[DEFAULT]" > ~/.databrickscfg
+          echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+          echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+          echo "jobs-api-version = 2.1" >> ~/.databrickscfg
+
+      - 
+        name: update jobs api to version 2.1
+        run: |
+          databricks jobs configure --version=2.1
+
+      - name: copy sparkrMosaic package
+        run: |
+          databricks fs mkdirs dbfs:/databricks/cjc
+          databricks fs cp --overwrite ./conf/pkg/sparkrMosaic_0.2.1.tar.gz dbfs:/databricks/cjc/sparkrMosaic_0.2.1.tar.gz
