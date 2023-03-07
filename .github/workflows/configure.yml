@@ -59,4 +59,4 @@ jobs:
       - name: copy netcdf-coral example
         run: |
           databricks fs mkdirs dbfs:/databricks/cjc/data
-          databricks fs cp -r --overwrite ./notebooks/examples/netcdf-coral dbfs:/databricks/cjc/data
+          databricks fs cp -r --overwrite ./notebooks/examples/python/netcdf-coral dbfs:/databricks/cjc/data
