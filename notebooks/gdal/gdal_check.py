@@ -3,6 +3,10 @@
 
 # COMMAND ----------
 
+# MAGIC %fs ls /FileStore/geospatial/mosaic/gdal/
+
+# COMMAND ----------
+
 import mosaic as mos
 mos.enable_mosaic(spark, dbutils)
 mos.enable_gdal(spark)
@@ -16,6 +20,10 @@ mos.enable_gdal(spark)
 
 import os
 from pyspark.sql import functions as F
+
+# COMMAND ----------
+
+# MAGIC %md # Read NetCDF File
 
 # COMMAND ----------
 

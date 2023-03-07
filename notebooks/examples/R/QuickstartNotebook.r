@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %md note this is installing an older version of mosaic to match up with the release - https://github.com/databrickslabs/mosaic/releases/tag/v0.2.1 
+
+# COMMAND ----------
+
+# MAGIC %run ./install_mosaic
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## Setup NYC taxi zones
 # MAGIC In order to setup the data please run the notebook available at "../../data/DownloadNYCTaxiZones". </br>
@@ -24,11 +32,37 @@ print(paste0("The raw data is stored in ", raw_path))
 
 # COMMAND ----------
 
+# MAGIC %fs ls /databricks/cjc
+
+# COMMAND ----------
+
 
 library(tidyverse)
 library(SparkR)
-sparkr_mosaic_package_path = '/dbfs/Users/robert.whiffin@databricks.com/mosaic/sparkrMosaic_0_1_0_tar.gz'
+sparkr_mosaic_package_path = '/dbfs/databricks/cjc/sparkrMosaic_0.2.1.tar.gz'
 install.packages(sparkr_mosaic_package_path, repos=NULL)
+
+
+# COMMAND ----------
+
+library(sparkrMosaic)
+
+# COMMAND ----------
+
+# enableMosaic <- function(
+#   geometryAPI="ESRI"
+#   ,indexSystem="H3"
+# ){
+#   geometry_api <- sparkR.callJStatic(x="com.databricks.labs.mosaic.core.geometry.api.GeometryAPI", methodName="apply", geometryAPI)
+#   index_system_id <- sparkR.callJStatic(x="com.databricks.labs.mosaic.core.index.IndexSystemID", methodName="apply", indexSystem)
+#   indexing_system <- sparkR.callJStatic(x="com.databricks.labs.mosaic.core.index.IndexSystemID", methodName="getIndexSystem", index_system_id)
+#   mosaic_context <- sparkR.newJObject(x="com.databricks.labs.mosaic.functions.MosaicContext", indexing_system, geometry_api)
+#   functions <<- sparkR.callJMethod(mosaic_context, "functions")
+  
+# }
+
+# COMMAND ----------
+
 library(sparkrMosaic)
 sparkrMosaic::enableMosaic()
 
@@ -44,34 +78,34 @@ sparkrMosaic::enableMosaic()
 
 # COMMAND ----------
 
-neighbourhoods <- 
-  SparkR::read.json(
-    raw_taxi_zones_path
-    ,multiLine=T
-  ) %>% SparkR::select(
-  SparkR::column("type")
-    ,SparkR::alias(SparkR::explode(SparkR::column("features")), "feature")
-  ) %>% 
-  SparkR::select(
-    "type"
-    ,"feature.properties"
-    ,"feature.geometry"
-  ) %>%
-  SparkR::withColumn(
-  "json_geometry"
-  ,SparkR::to_json(SparkR::column("geometry"))
-  ) %>%
-SparkR::withColumn(
-  "geometry"
-  , sparkrMosaic::st_aswkt(sparkrMosaic::st_geomfromgeojson(column("json_geometry")))
-)
+# neighbourhoods <- 
+#   SparkR::read.json(
+#     raw_taxi_zones_path
+#     ,multiLine=T
+#   ) %>% SparkR::select(
+#   SparkR::column("type")
+#     ,SparkR::alias(SparkR::explode(SparkR::column("features")), "feature")
+#   ) %>% 
+#   SparkR::select(
+#     "type"
+#     ,"feature.properties"
+#     ,"feature.geometry"
+#   ) %>%
+#   SparkR::withColumn(
+#   "json_geometry"
+#   ,SparkR::to_json(SparkR::column("geometry"))
+#   ) %>%
+# SparkR::withColumn(
+#   "geometry"
+#   , sparkrMosaic::st_aswkt(sparkrMosaic::st_geomfromgeojson(column("json_geometry")))
+# )
 
 
 # COMMAND ----------
 
-display(
-  neighbourhoods 
-)
+# display(
+#   neighbourhoods 
+# )
 
 # COMMAND ----------
 
@@ -85,16 +119,16 @@ display(
 
 # COMMAND ----------
 
-display(
-  neighbourhoods %>%
-  withColumn(
-    "calculatedArea", sparkrMosaic::st_area(column("geometry"))
-  ) %>%
-  withColumn(
-    "calculatedLength", sparkrMosaic::st_length(column("geometry"))
-  ) %>%
-  SparkR::select("geometry", "calculatedArea", "calculatedLength")
-)
+# display(
+#   neighbourhoods %>%
+#   withColumn(
+#     "calculatedArea", sparkrMosaic::st_area(column("geometry"))
+#   ) %>%
+#   withColumn(
+#     "calculatedLength", sparkrMosaic::st_length(column("geometry"))
+#   ) %>%
+#   SparkR::select("geometry", "calculatedArea", "calculatedLength")
+# )
 
 # COMMAND ----------
 
