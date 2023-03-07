@@ -14,4 +14,9 @@ mos.enable_gdal(spark)
 
 # COMMAND ----------
 
+import os
+from pyspark.sql import functions as F
+
+# COMMAND ----------
+
 
