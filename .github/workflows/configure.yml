@@ -55,3 +55,8 @@ jobs:
         run: |
           databricks fs mkdirs dbfs:/databricks/cjc
           databricks fs cp --overwrite ./conf/pkg/sparkrMosaic_0.2.1.tar.gz dbfs:/databricks/cjc/sparkrMosaic_0.2.1.tar.gz
+
+      - name: copy netcdf-coral example
+        run: |
+          databricks fs mkdirs dbfs:/databricks/cjc/data
+          databricks fs cp -r --overwrite ./notebooks/examples/netcdf-coral dbfs:/databricks/cjc/data
