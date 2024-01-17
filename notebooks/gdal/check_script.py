@@ -11,7 +11,22 @@
 
 # COMMAND ----------
 
-R.version
+file_path = "/dbfs/FileStore/geospatial/mosaic/gdal/mosaic-gdal-init.sh"
+
+# COMMAND ----------
+
+
+# Read the file contents
+with open(file_path, 'r') as file:
+    file_contents = file.read()
+
+# Display the contents
+print(file_contents)
+
+# COMMAND ----------
+
+# MAGIC %r
+# MAGIC R.version
 
 # COMMAND ----------
 
@@ -19,7 +34,8 @@ R.version
 
 # COMMAND ----------
 
-install.packages(c('rgdal'),repos = "http://cran.case.edu", configure.args=c("--with-proj-include=/packages/PROJ/6.1.0/include","--with-proj-lib=/packages/PROJ/6.1.0/lib"))
+# MAGIC %r
+# MAGIC install.packages(c('rgdal'),repos = "http://cran.case.edu", configure.args=c("--with-proj-include=/packages/PROJ/6.1.0/include","--with-proj-lib=/packages/PROJ/6.1.0/lib"))
 
 # COMMAND ----------
 
@@ -27,7 +43,8 @@ install.packages(c('rgdal'),repos = "http://cran.case.edu", configure.args=c("--
 
 # COMMAND ----------
 
-library(rgdal)
+# MAGIC %r
+# MAGIC library(rgdal)
 
 # COMMAND ----------
 
@@ -35,10 +52,12 @@ library(rgdal)
 # MAGIC - [Why have CRS, projections and transformations changed?
 # MAGIC ](https://rgdal.r-forge.r-project.org/articles/CRS_projections_transformations.html)
 # MAGIC - [R spatial follows GDAL and PROJ development](https://r-spatial.org/r/2020/03/17/wkt.html)
+# MAGIC
 
 # COMMAND ----------
 
-ogrDrivers()$name
+# MAGIC %r
+# MAGIC ogrDrivers()$name
 
 # COMMAND ----------
 
@@ -48,10 +67,10 @@ ogrDrivers()$name
 
 # MAGIC %python
 # MAGIC user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
-# MAGIC 
+# MAGIC
 # MAGIC raw_path = f"dbfs:/tmp/mosaic/{user_name}"
 # MAGIC raw_taxi_zones_path = f"{raw_path}/taxi_zones"
-# MAGIC 
+# MAGIC
 # MAGIC print(f"The raw data will be stored in {raw_path}")
 
 # COMMAND ----------
@@ -59,13 +78,13 @@ ogrDrivers()$name
 # MAGIC %python
 # MAGIC import requests
 # MAGIC import pathlib
-# MAGIC 
+# MAGIC
 # MAGIC taxi_zones_url = 'https://data.cityofnewyork.us/api/geospatial/d3c5-ddgc?method=export&format=GeoJSON'
-# MAGIC 
+# MAGIC
 # MAGIC # The DBFS file system is mounted under /dbfs/ directory on Databricks cluster nodes
 # MAGIC local_taxi_zones_path = pathlib.Path(raw_taxi_zones_path.replace('dbfs:/', '/dbfs/'))
 # MAGIC local_taxi_zones_path.mkdir(parents=True, exist_ok=True)
-# MAGIC 
+# MAGIC
 # MAGIC req = requests.get(taxi_zones_url)
 # MAGIC with open(local_taxi_zones_path / f'nyc_taxi_zones.geojson', 'wb') as f:
 # MAGIC   f.write(req.content)
@@ -78,11 +97,13 @@ ogrDrivers()$name
 
 # COMMAND ----------
 
-taxi_zones <- readOGR(dsn="/dbfs/tmp/mosaic/christopher.chalcraft@databricks.com/taxi_zones/nyc_taxi_zones.geojson", layer="nyc_taxi_zones")
+# MAGIC %r
+# MAGIC taxi_zones <- readOGR(dsn="/dbfs/tmp/mosaic/christopher.chalcraft@databricks.com/taxi_zones/nyc_taxi_zones.geojson", layer="nyc_taxi_zones")
 
 # COMMAND ----------
 
-# terra::vect or sf::st_read.
+# MAGIC %r
+# MAGIC # terra::vect or sf::st_read.
 
 # COMMAND ----------
 
@@ -98,7 +119,8 @@ taxi_zones <- readOGR(dsn="/dbfs/tmp/mosaic/christopher.chalcraft@databricks.com
 
 # COMMAND ----------
 
--- 
+# MAGIC %r
+# MAGIC -- 
 
 # COMMAND ----------
 
@@ -106,7 +128,8 @@ taxi_zones <- readOGR(dsn="/dbfs/tmp/mosaic/christopher.chalcraft@databricks.com
 
 # COMMAND ----------
 
-dbutils.fs.mkdirs("/tmp/ship2ship")
+# MAGIC %r
+# MAGIC dbutils.fs.mkdirs("/tmp/ship2ship")
 
 # COMMAND ----------
 
@@ -121,7 +144,8 @@ dbutils.fs.mkdirs("/tmp/ship2ship")
 
 # COMMAND ----------
 
-ais_data <- readOGR(dsn="/tmp/ship2ship", layer="AIS_2018_01_31")
+# MAGIC %r
+# MAGIC ais_data <- readOGR(dsn="/tmp/ship2ship", layer="AIS_2018_01_31")
 
 # COMMAND ----------
 

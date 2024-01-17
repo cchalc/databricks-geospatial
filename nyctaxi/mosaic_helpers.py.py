@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md Install [Mosaic](https://databrickslabs.github.io/mosaic/index.html) from Databricks Labs
-# MAGIC 
+# MAGIC
 # MAGIC > Provides some convenience functions to include working with Kepler.
 
 # COMMAND ----------
@@ -10,7 +10,7 @@
 # COMMAND ----------
 
 # MAGIC %md _Workaround for `mosaic_kepler` magic rendering issue in Mosaic 0.2.1 (will be fixed in 0.3+)_
-# MAGIC 
+# MAGIC
 # MAGIC > main function to call `as_kepler(table_name, feature_name, feature_type, limit_cnt=1000)`
 
 # COMMAND ----------
@@ -25,7 +25,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, conv, lower
 
 from mosaic.api.accessors import st_astext
-from mosaic.api.functions import st_centroid2D
+# from mosaic.api.functions import st_centroid2D
 from mosaic.config import config
 from mosaic.resources import mosaic_logo_b64str
 from mosaic.utils.kepler_config import mosaic_kepler_config
