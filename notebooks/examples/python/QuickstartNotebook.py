@@ -257,9 +257,8 @@ display(withDropoffZone)
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC %%mosaic_kepler
-# MAGIC withDropoffZone "pickup_h3" "h3" 5000
+%%mosaic_kepler
+withDropoffZone "pickup_h3" "h3" 5000
 
 # COMMAND ----------
 

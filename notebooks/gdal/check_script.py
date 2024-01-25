@@ -65,31 +65,29 @@ print(file_contents)
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
-# MAGIC
-# MAGIC raw_path = f"dbfs:/tmp/mosaic/{user_name}"
-# MAGIC raw_taxi_zones_path = f"{raw_path}/taxi_zones"
-# MAGIC
-# MAGIC print(f"The raw data will be stored in {raw_path}")
+user_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
+
+raw_path = f"dbfs:/tmp/mosaic/{user_name}"
+raw_taxi_zones_path = f"{raw_path}/taxi_zones"
+
+print(f"The raw data will be stored in {raw_path}")
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC import requests
-# MAGIC import pathlib
-# MAGIC
-# MAGIC taxi_zones_url = 'https://data.cityofnewyork.us/api/geospatial/d3c5-ddgc?method=export&format=GeoJSON'
-# MAGIC
-# MAGIC # The DBFS file system is mounted under /dbfs/ directory on Databricks cluster nodes
-# MAGIC local_taxi_zones_path = pathlib.Path(raw_taxi_zones_path.replace('dbfs:/', '/dbfs/'))
-# MAGIC local_taxi_zones_path.mkdir(parents=True, exist_ok=True)
-# MAGIC
-# MAGIC req = requests.get(taxi_zones_url)
-# MAGIC with open(local_taxi_zones_path / f'nyc_taxi_zones.geojson', 'wb') as f:
-# MAGIC   f.write(req.content)
-# MAGIC   
-# MAGIC display(dbutils.fs.ls(raw_taxi_zones_path))
+import requests
+import pathlib
+
+taxi_zones_url = 'https://data.cityofnewyork.us/api/geospatial/d3c5-ddgc?method=export&format=GeoJSON'
+
+# The DBFS file system is mounted under /dbfs/ directory on Databricks cluster nodes
+local_taxi_zones_path = pathlib.Path(raw_taxi_zones_path.replace('dbfs:/', '/dbfs/'))
+local_taxi_zones_path.mkdir(parents=True, exist_ok=True)
+
+req = requests.get(taxi_zones_url)
+with open(local_taxi_zones_path / f'nyc_taxi_zones.geojson', 'wb') as f:
+  f.write(req.content)
+  
+display(dbutils.fs.ls(raw_taxi_zones_path))
 
 # COMMAND ----------
 

@@ -38,9 +38,8 @@ residential_buildings_counts = (residential_buildings
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC %%mosaic_kepler
-# MAGIC residential_buildings_counts "centroid_index_res_6" "h3" 100000
+%%mosaic_kepler
+residential_buildings_counts "centroid_index_res_6" "h3" 100000
 
 # COMMAND ----------
 
@@ -56,9 +55,8 @@ train_station_buildings_counts = (train_station_buildings
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC %%mosaic_kepler
-# MAGIC train_station_buildings_counts "centroid_index_res_6" "h3" 100000
+%%mosaic_kepler
+train_station_buildings_counts "centroid_index_res_6" "h3" 100000
 
 # COMMAND ----------
 
@@ -77,9 +75,8 @@ dense_residential_buildings = (residential_buildings
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC %%mosaic_kepler
-# MAGIC dense_residential_buildings "polygon" "geometry" 100000
+%%mosaic_kepler
+dense_residential_buildings "polygon" "geometry" 100000
 
 # COMMAND ----------
 
